@@ -1,0 +1,149 @@
+// Breadth First Search with path recreation
+// CSES Message Route
+// Nabajyoti Majumdar
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using ld= long double;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pii = pair<int,int>;
+#define ff first
+#define ss second
+// #define mp make_pair
+const int mod=1e9+7;
+const int inf=INT_MAX;
+
+
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+
+      ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+
+      // if(sz(name)){
+
+      //       freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+
+      //       freopen((name+".out").c_str(), "w", stdout);
+
+      // }
+      return;
+
+}
+
+// ------Union Find---------
+// class UnionFind{
+// public:
+
+//   vector<int> component;
+//   vector<int>rank;
+//   int distinct;
+
+
+//   UnionFind(int n){
+//     distinct=n;
+//     for(int i=0;i<=n;i++){
+//       component.push_back(i);
+//       rank.push_back(0);
+//     }
+//   }
+
+//   bool unite(int a,int b){
+//     int rootA=findComponent(a);
+//     int rootB=findComponent(b);
+
+//     if(rootA==rootB){
+//       return false;
+//     }
+
+//     if(rank[rootA]<rank[rootB]){
+//       component[rootA]=rootB;
+//     }else{
+//       if(rank[rootA]==rank[rootB]){
+//         rank[rootA]++;
+//       }
+//       component[rootB]=rootA;
+//     }
+//     distinct--;
+//     return true;
+//   }
+
+//   int findComponent(int a){
+//     if(component[a]!=a){
+//       component[a]=findComponent(component[a]);
+//     }
+//     return component[a];
+//   }
+
+//   bool connected(int a,int b){
+//     return findComponent(a)==findComponent(b);
+//   }
+// };
+
+
+int dir[4][2]={{0,1},{1,0},{-1,0},{0,-1}};
+
+
+
+int main(){
+   setIO();
+   //--------------//
+   int n,m;
+   cin>>n>>m;
+   vector<list<int>>g(n+1);
+   vector<int>from(n+1);
+
+   // making the adjacency list
+   int x,y;
+   for(int i=0;i<m;i++){
+    cin>>x>>y;
+    g[x].pb(y);
+    g[y].pb(x);
+   }
+
+   queue<int>q;
+   vi vis(n+1,0);
+   q.push(n);
+   vis[n]=1;
+
+   // Breadth  first search
+   while(!q.empty()){
+    int p=q.front();
+    q.pop();
+    vis[p]=1;
+
+    for(auto aa: g[p]){
+      if(!vis[aa]){
+        from[aa]=p;
+        vis[aa]=1;
+        q.push(aa);
+      }
+    }
+   }
+
+   if(!vis[1]){
+    cout<<"IMPOSSIBLE"<<endl;
+    return 0;
+   }
+
+   vi v;
+   v.pb(1);
+   int a=1;
+   while(a!=n){
+    a=from[a];
+    v.pb(a);
+   }
+
+   cout<<v.size()<<endl;
+   for(auto it:v){
+    cout<<it<<" ";
+   }
+
+   //------------//
+   return 0;
+}
+
