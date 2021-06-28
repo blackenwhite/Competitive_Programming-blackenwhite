@@ -1,0 +1,170 @@
+// CSES Message Route
+// Nabajyoti Majumdar
+
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
+using ld= long double;
+using vi = vector<int>;
+#define pb push_back
+#define rsz resize
+#define all(x) begin(x), end(x)
+#define sz(x) (int)(x).size()
+using pii = pair<int,int>;
+#define ff first
+#define ss second
+// #define mp make_pair
+const int mod=1e9+7;
+const int inf=INT_MAX;
+
+
+void setIO(string name = "") { // name is nonempty for USACO file I/O
+
+      ios_base::sync_with_stdio(0); cin.tie(0); // see Fast Input & Output
+
+      // if(sz(name)){
+
+      //       freopen((name+".in").c_str(), "r", stdin); // see Input & Output
+
+      //       freopen((name+".out").c_str(), "w", stdout);
+
+      // }
+      return;
+
+}
+
+//---- DFS tree----------
+
+const int kMaxN=1e5+5;
+
+vector<int>vertex[kMaxN]; // the adjacency list
+
+bool visited[kMaxN];
+
+int parent[kMaxN];
+
+vector<pii> free_edges;
+
+//  DFS
+
+void Df(int node){
+   visited[node]=true;
+   for(auto itr:vertex[node]){
+      if(itr==parent[node]) continue;
+
+      if(!visited[itr]){
+         parent[itr]=node;
+         Df(itr);
+      }else{
+         if(itr<node){
+            free_edges.pb({node,itr});
+         }
+      }
+   }
+   return;
+}
+
+
+
+
+
+// ------Union Find---------
+// class UnionFind{
+// public:
+
+//   vector<int> component;
+//   vector<int>rank;
+//   int distinct;
+
+
+//   UnionFind(int n){
+//     distinct=n;
+//     for(int i=0;i<=n;i++){
+//       component.push_back(i);
+//       rank.push_back(0);
+//     }
+//   }
+
+//   bool unite(int a,int b){
+//     int rootA=findComponent(a);
+//     int rootB=findComponent(b);
+
+//     if(rootA==rootB){
+//       return false;
+//     }
+
+//     if(rank[rootA]<rank[rootB]){
+//       component[rootA]=rootB;
+//     }else{
+//       if(rank[rootA]==rank[rootB]){
+//         rank[rootA]++;
+//       }
+//       component[rootB]=rootA;
+//     }
+//     distinct--;
+//     return true;
+//   }
+
+//   int findComponent(int a){
+//     if(component[a]!=a){
+//       component[a]=findComponent(component[a]);
+//     }
+//     return component[a];
+//   }
+
+//   bool connected(int a,int b){
+//     return findComponent(a)==findComponent(b);
+//   }
+// };
+
+
+int dir[4][2]={{0,1},{1,0},{-1,0},{0,-1}};
+
+
+
+int main(){
+   setIO();
+   //--------------//
+   int n, m; cin >> n >> m;
+
+    for (int i = 0; i < m; i += 1) {
+        int a, b; cin >> a >> b;
+        vertex[a].push_back(b);
+        vertex[b].push_back(a);
+    }
+
+    vector<int> root_nodes;
+    for (int i = 1; i <= n; i += 1) {
+        if (not visited[i]) {
+            root_nodes.push_back(i);
+            Df(i);
+        }       
+    }
+
+
+    if ((int)root_nodes.size() - 1 > (int)free_edges.size()) {
+        cout << "-1\n";
+        return 0;
+    } else {
+
+        cout << (int)root_nodes.size() - 1 << '\n';
+
+        while ((int)root_nodes.size() > 1) {
+   
+            int a = root_nodes.front();
+            int b = root_nodes.back();
+            root_nodes.pop_back();
+            
+            auto deleted_edge = free_edges.back();
+            free_edges.pop_back();
+
+            cout << deleted_edge.first << ' ' << deleted_edge.second << ' ' << a << ' ' << b << '\n';
+        }
+    }
+
+   //------------//
+   return 0;
+}
+
+
